@@ -1,5 +1,3 @@
-# Tarea-1
-
 django-ribbit
 =============
 

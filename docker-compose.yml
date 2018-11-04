@@ -7,7 +7,7 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: ribbit-web
-    command: python manage.py runserver 8081
+    command: python manage.py runserver 0:8080
     volumes:
       - .:/ribbit
     ports:

@@ -6,8 +6,7 @@ pipeline {
         stage("Build and start test image") {
             steps {
                 sh 'git pull origin master'
-                sh 'docker-composer build'
-                sh 'docker-compose up -d'
+                sh 'docker build -t ribbit-web .'
                 waitUntilServicesReady
             }
         }
@@ -21,13 +20,17 @@ pipeline {
                 sh 'heroku container:push web --app dockeribbit'
             }
         }
-        stage('heroku-git') {
-            steps {
-                sh './tester-jenkins/heroku-git.sh'
-            }
-        }
-    }
     post {
-
+        always{
+            deleteDir()
+        }
+        success {
+            echo 'terminado'
+        }
+        failure {
+            mail to: 'gustavogalveza@gmail.com',
+            subject: "Failed Pipeline: ${currentBuild.fullDisplayName}",
+            body: "Something is wrong with ${env.BUILD_URL}"
+        }
     }
 }

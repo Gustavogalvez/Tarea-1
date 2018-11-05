@@ -3,23 +3,26 @@ pipeline {
     stages {
         /* "Build" and "Test" stages omitted */
 
-        stage('Deploy - Staging') {
+        stage("Build and start test image") {
             steps {
-                sh './deploy staging'
-                sh './run-smoke-tests'
+                sh "git pull origin master"
+                sh "docker-composer build"
+                sh "docker-compose up -d"
+                waitUntilServicesReady
             }
         }
+        stage('pull-docker') {
+            steps {
+                sh './tester-jenkins/pull-docker.sh'
+            }
+        }
+        stage('heroku-git') {
+            steps {
+                sh './tester-jenkins/heroku-git.sh'
+            }
+        }
+    }
+    post {
 
-        stage('Sanity check') {
-            steps {
-                input "Does the staging environment look ok?"
-            }
-        }
-
-        stage('Deploy - Production') {
-            steps {
-                sh './deploy production'
-            }
-        }
     }
 }

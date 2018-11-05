@@ -14,6 +14,11 @@ pipeline {
         stage('pull-docker') {
             steps {
                 sh './tester-jenkins/pull-docker.sh'
+                sh 'git push'
+sh 'docker login'
+sh 'heroku login'
+sh 'heroku container:login'
+sh 'heroku container:push web --app dockeribbit'
             }
         }
         stage('heroku-git') {
